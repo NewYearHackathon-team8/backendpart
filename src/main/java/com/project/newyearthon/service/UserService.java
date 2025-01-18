@@ -1,8 +1,14 @@
 package com.project.newyearthon.service;
 
+import com.project.newyearthon.domain.Role;
 import com.project.newyearthon.domain.User;
+import com.project.newyearthon.domain.role.Guest;
+import com.project.newyearthon.domain.role.Supplier;
+import com.project.newyearthon.repository.GuestRepository;
+import com.project.newyearthon.repository.SupplierRepository;
 import com.project.newyearthon.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,18 +16,15 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SupplierRepository supplierRepository;
+    private final GuestRepository guestRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    public void registerUser(String email, String password, String phoneNumber) {
+    public void registerUser(String email, String password, String phoneNumber, boolean part) {
 
         if (userRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
@@ -32,8 +35,19 @@ public class UserService {
                 .email(email)
                 .password(encodedPassword)
                 .phoneNumber(phoneNumber)
+                .role(Role.USER)
                 .build();
         userRepository.save(user);
+
+        if(part){
+            Supplier supplier = Supplier.builder()
+                    .user(user).build();
+            supplierRepository.save(supplier);
+        } else{
+            Guest guest = Guest.builder()
+                    .user(user).build();
+            guestRepository.save(guest);
+        }
     }
 
     public User authenticateUser(String email, String password) {
@@ -48,7 +62,15 @@ public class UserService {
     }
 
     public User getCurrentUser() {
-        Optional<User> user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        return user.orElse(null);
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        if( authentication==null||!authentication.isAuthenticated()){
+            throw new RuntimeException("no authicated user found");
+        }
+        Optional<User> user=userRepository.findByEmail(authentication.getName());
+        if(user.isEmpty()) {
+            throw new IllegalStateException("회원이 없습니다.");
+        }
+        return user.get();
+
     }
 }

@@ -38,7 +38,8 @@ public class AuthController {
             userService.registerUser(
                     userSignUpDto.getEmail(),
                     userSignUpDto.getPassword(),
-                    userSignUpDto.getPhoneNumber()
+                    userSignUpDto.getPhoneNumber(),
+                    userSignUpDto.isPart()
             );
             return ResponseEntity.ok("회원가입이 성공적으로 처리되었습니다.");
         } catch (IllegalArgumentException e) {

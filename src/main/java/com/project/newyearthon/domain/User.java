@@ -1,10 +1,9 @@
 package com.project.newyearthon.domain;
 
+import com.project.newyearthon.domain.role.Guest;
+import com.project.newyearthon.domain.role.Supplier;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,6 +11,8 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -21,32 +22,25 @@ public class User {
     @Column(name = "USER_EMAIL", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "USER_PASSWORD", nullable = false)
+    @Column(name = "USER_PASSWORD", nullable = true)
     private String password;
 
     @Column(name = "USER_PHONE_NUMBER", nullable = true)
     private String phoneNumber;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
+    private Guest guest;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
+    private Supplier supplier;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "USER_ROLE", nullable = false)
     private Role role;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Comment> comments;
 
     @Column(name = "USER_NAME", nullable = true)
     private String name;
 
     @Column(name = "USER_PROFILE_URL", nullable = true)
     private String profileUrl;
-
-    @Builder
-    public User(String email, String password, String phoneNumber, Role role, String name, String profileUrl) {
-        this.email = email;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-        this.role = role != null ? role : Role.USER;
-        this.name = name;
-        this.profileUrl = profileUrl;
-    }
 }
