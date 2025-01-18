@@ -5,22 +5,17 @@ import com.project.newyearthon.service.HomeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
+@RequestMapping("/gdg")
 public class HomeController {
     private final HomeService homeService;
     @PostMapping("/create-home")
-    public ResponseEntity createHome(@RequestBody HomeCreateRequestDto homeCreateRequestDto) {
+    public ResponseEntity<String> createHome(@RequestBody HomeCreateRequestDto homeCreateRequestDto) {
         homeService.createHome(homeCreateRequestDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("집 정보 등록되었습니다.");
     }
 
-    @GetMapping
-    public ResponseEntity<> getHomeList() {
-        homeService.getHomeList();
-    }
 }
