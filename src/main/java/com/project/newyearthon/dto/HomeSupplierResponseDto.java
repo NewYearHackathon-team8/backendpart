@@ -1,19 +1,15 @@
 package com.project.newyearthon.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
-public class HomeResponseDto {
+public class HomeSupplierResponseDto {
     private Long homeId;
-    private String img;
     private String address;
     private int deposit;
     private int monthlyRent;
-    private String oneLineInfo;
+    private boolean matched;
 }
