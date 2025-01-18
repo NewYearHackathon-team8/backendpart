@@ -1,6 +1,7 @@
 package com.project.newyearthon.controller;
 
 import com.project.newyearthon.dto.HomeCreateRequestDto;
+import com.project.newyearthon.dto.HomeDetailResponseDto;
 import com.project.newyearthon.dto.HomeResponseDto;
 import com.project.newyearthon.dto.HomeSupplierResponseDto;
 import com.project.newyearthon.service.HomeService;
@@ -32,6 +33,12 @@ public class HomeController {
     public ResponseEntity<List<HomeSupplierResponseDto>> homeSupplierList() {
         List<HomeSupplierResponseDto> homeSupplierResponseDtos = homeService.getHomeSupplierList();
         return ResponseEntity.ok(homeSupplierResponseDtos);
+    }
+
+    @GetMapping("/guest-detail")
+    public ResponseEntity<HomeDetailResponseDto> homeDetailList(@RequestParam(name="homeId") int homeId) {
+        HomeDetailResponseDto homeDetailResponseDto = homeService.homeDetail(homeId);
+        return ResponseEntity.ok(homeDetailResponseDto);
     }
 
 

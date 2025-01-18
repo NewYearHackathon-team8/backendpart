@@ -3,6 +3,7 @@ package com.project.newyearthon.service;
 import com.project.newyearthon.domain.Home;
 import com.project.newyearthon.domain.role.Supplier;
 import com.project.newyearthon.dto.HomeCreateRequestDto;
+import com.project.newyearthon.dto.HomeDetailResponseDto;
 import com.project.newyearthon.dto.HomeResponseDto;
 import com.project.newyearthon.dto.HomeSupplierResponseDto;
 import com.project.newyearthon.repository.HomeRepository;
@@ -75,5 +76,24 @@ public class HomeService {
                         .monthlyRent(home.getMonthlyRent())
                         .matched(home.isMatched())
                         .build()).collect(Collectors.toList());
+    }
+
+    public HomeDetailResponseDto homeDetail(int homeId) {
+        Home home = homeRepository.findById(homeId).orElse(null);
+        return HomeDetailResponseDto.builder()
+                .img1(home.getImg1())
+                .contactPeriod(home.getContactPeriod())
+                .deposit(home.getDeposit())
+                .monthlyRent(home.getMonthlyRent())
+                .address(home.getAddress())
+                .addressDetail(home.getAddressDetail())
+                .roomType(home.getRoomType())
+                .roomInfo(home.getRoomInfo())
+                .allowance(home.getAllowance())
+                .mealInfo(home.getMealInfo())
+                .sleepInfo(home.getSleepInfo())
+                .oneLineInfo(home.getOneLineInfo())
+                .detailInfo(home.getDetailInfo())
+                .build();
     }
 }
