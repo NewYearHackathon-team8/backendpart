@@ -3,8 +3,11 @@ package com.project.newyearthon.service;
 import com.project.newyearthon.domain.User;
 import com.project.newyearthon.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -42,5 +45,10 @@ public class UserService {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 틀렸습니다!");
         }
         return user;
+    }
+
+    public User getCurrentUser() {
+        Optional<User> user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        return user.orElse(null);
     }
 }
