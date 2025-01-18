@@ -20,7 +20,7 @@ public class Guest {
     @JoinColumn(name = "ID")
     private User user;
 
-    private String img1;
+    private String List;
     private int contactPeriod;
     private int deposit;
     private int monthlyRent;
