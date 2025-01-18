@@ -1,6 +1,7 @@
 package com.project.newyearthon.controller;
 
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,8 @@ import java.util.Map;
 @RequestMapping("/api/images")
 public class ImageUploadController {
 
-    private static final String UPLOAD_DIR = "/Users/junseok/Desktop/project/백야/backendpart/src/main/java/com/project/newyearthon/controller/resource/"; // 업로드된 파일을 저장할 디렉토리
+    // 업로드용 상대경로
+    private static final String UPLOAD_DIR = "/Users/junseok/Desktop/project/백야/backendpart/backendpart/src/main/java/com/project/newyearthon/controller/resource/";
 
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") List<MultipartFile> file) {
@@ -26,7 +28,9 @@ public class ImageUploadController {
             // 파일이 비어 있는지 확인
             if (filee.isEmpty()) {
                 response.put("message", "파일이 비어 있습니다.");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                response.put("fileName", filee.getOriginalFilename());
+                response.put("status", ResponseEntity.status(HttpStatus.BAD_REQUEST).toString());
+                continue;
             }
 
             try {
@@ -36,22 +40,33 @@ public class ImageUploadController {
                     uploadPath.toFile().mkdirs();
                 }
 
-                // 파일 저장 그럼
+                // 원래 파일 이름과 확장자 분리
                 String originalFilename = filee.getOriginalFilename();
-                Path filePath = uploadPath.resolve(originalFilename);
-                filee.transferTo(filePath.toFile());
+                String extension = ""; // 기본값 빈 문자열
 
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+
+                // 새로운 파일 이름 생성 (UUID + 확장자)
+                String newFileName = UUID.randomUUID().toString() + extension;
+                Path filePath = uploadPath.resolve(newFileName);
+
+                // 파일 저장
+                filee.transferTo(filePath.toFile());
                 response.put("message", "파일이 성공적으로 업로드되었습니다.");
-                response.put("fileName", originalFilename);
+                response.put("fileName", newFileName);
+                response.put("originalFileName", originalFilename);
                 response.put("filePath", filePath.toString());
+                response.put("status", ResponseEntity.status(200).toString());
 
             } catch (IOException e) {
                 response.put("message", "파일 업로드 중 오류가 발생했습니다.");
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+                response.put("fileName", filee.getOriginalFilename());
+                response.put("status", e.getMessage());
             }
         }
 
         return ResponseEntity.ok(response);
     }
 }
-
