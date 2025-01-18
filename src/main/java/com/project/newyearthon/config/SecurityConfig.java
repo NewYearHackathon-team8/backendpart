@@ -40,8 +40,10 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/gdg/**", "/oauth2/**").permitAll()
-                        .anyRequest().permitAll()
+
+                        .requestMatchers("/gdg/**", "/oauth2/**", "/swagger-ui/**","/swagger-resources/**",
+                                "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(configurationSource()))
                 .oauth2Login(oauth2 -> oauth2
