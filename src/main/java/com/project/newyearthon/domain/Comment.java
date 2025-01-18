@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
-
+//안쓰는코드임
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

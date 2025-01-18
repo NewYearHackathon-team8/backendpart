@@ -1,5 +1,6 @@
-package com.project.newyearthon.domain;
+package com.project.newyearthon.domain.role;
 
+import com.project.newyearthon.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Home { 
+//공급자
+public class Supplier{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,7 +20,7 @@ public class Home {
     @JoinColumn(name = "ID")
     private User user;
 
-    private String img1; // 만든 이미지 코드로 변경 예정
+    private String img1;
     private int contactPeriod;
     private int deposit;
     private int monthlyRent;
