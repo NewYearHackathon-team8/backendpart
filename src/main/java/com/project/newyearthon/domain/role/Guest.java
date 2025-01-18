@@ -16,21 +16,8 @@ public class Guest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "ID")
+    @OneToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    private String img1;
-    private int contactPeriod;
-    private int deposit;
-    private int monthlyRent;
-    private String address;
-    private String roomType;
-    private String roomInfo;
-    private String allowance;
-    private String mealInfo;
-    private String sleepInfo;
-    private String oneLineInfo;
-    private String detailInfo;
 
 }

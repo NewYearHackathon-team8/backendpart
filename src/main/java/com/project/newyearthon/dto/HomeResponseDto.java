@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class HomeResponseDto {
+    private Long homeId;
     private String img;
-    private String name;
     private String address;
     private int deposit;
-    private int monthlyLent;
+    private int monthlyRent;
     private String oneLineInfo;
 }

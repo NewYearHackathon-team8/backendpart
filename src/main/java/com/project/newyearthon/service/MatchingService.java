@@ -1,32 +1,38 @@
 package com.project.newyearthon.service;
 
+import com.project.newyearthon.domain.Home;
 import com.project.newyearthon.domain.Matching;
 import com.project.newyearthon.domain.User;
+import com.project.newyearthon.repository.HomeRepository;
 import com.project.newyearthon.repository.MatchingRepository;
 import com.project.newyearthon.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
+@AllArgsConstructor
 public class MatchingService {
 
-    @Autowired
     private MatchingRepository matchingRepository;
-
-    @Autowired
     private UserRepository userRepository;
+    private UserService userService;
+    private HomeRepository homeRepository;
 
-    public void createMatching(Long userId, Long homeId, Long providerId, String completed, String reason) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("수요자를 찾을 수 없습니다."));
+    public void createMatching(int homeId) {
+        Home home = homeRepository.findById(homeId)
+                .orElseThrow(() -> new IllegalArgumentException("Home not found with id: " + homeId));
 
-        Matching matching = new Matching();
-        matching.setUser(user);
-        matching.setHomeId(homeId);
-        matching.setProviderId(providerId);
-        matching.setCompleted(completed);
-        matching.setReason(reason);
+        // Home의 matched 값을 true로 변경
+        home.setMatched(true);
+        homeRepository.save(home); // 변경사항 저장
+
+        Matching matching = Matching.builder()
+                .guest(userService.getCurrentUser().getGuest())
+                .home(homeRepository.findById(homeId).orElseThrow()).build();
 
         matchingRepository.save(matching);
     }
