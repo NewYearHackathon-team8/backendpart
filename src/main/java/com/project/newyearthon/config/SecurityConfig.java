@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/gdg/**", "/oauth2/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .cors(cors -> cors.configurationSource(configurationSource()))
                 .oauth2Login(oauth2 -> oauth2
