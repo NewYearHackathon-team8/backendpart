@@ -1,8 +1,10 @@
 package com.project.newyearthon.service;
 
 import com.project.newyearthon.domain.Home;
+import com.project.newyearthon.domain.role.Supplier;
 import com.project.newyearthon.dto.HomeCreateRequestDto;
 import com.project.newyearthon.dto.HomeResponseDto;
+import com.project.newyearthon.dto.HomeSupplierResponseDto;
 import com.project.newyearthon.repository.HomeRepository;
 import com.project.newyearthon.repository.SupplierRepository;
 import com.project.newyearthon.repository.UserRepository;
@@ -47,8 +49,9 @@ public class HomeService {
         // 모든 Home 엔티티 가져오기
         List<Home> homes = homeRepository.findAll();
 
-        // Home 엔티티를 HomeResponseDto로 변환
+        // isMatched가 false인 경우만 필터링하여 HomeResponseDto로 변환
         return homes.stream()
+                .filter(home -> !home.isMatched()) // isMatched가 false인 경우만 필터링
                 .map(home -> HomeResponseDto.builder()
                         .homeId(home.getId()) // Home 엔티티의 id를 DTO의 homeId에 매핑
                         .img(home.getImg1()) // Home 엔티티의 img1을 DTO의 img에 매핑
@@ -58,5 +61,19 @@ public class HomeService {
                         .oneLineInfo(home.getOneLineInfo()) // 간단 설명 매핑
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public List<HomeSupplierResponseDto> getHomeSupplierList() {
+        List<Home> homes = homeRepository.findAll();
+        Supplier supplier = userService.getCurrentUser().getSupplier();
+        return homes.stream()
+                .filter(home -> home.getSupplier().equals(supplier))
+                .map(home -> HomeSupplierResponseDto.builder()
+                        .homeId(home.getId())
+                        .address(home.getAddress())
+                        .deposit(home.getDeposit())
+                        .monthlyRent(home.getMonthlyRent())
+                        .matched(home.isMatched())
+                        .build()).collect(Collectors.toList());
     }
 }
